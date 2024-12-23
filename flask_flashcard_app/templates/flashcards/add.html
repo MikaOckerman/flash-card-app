@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add Category</title>
+</head>
+<body>
+    <h1>Add a New Category</h1>
+    <form method="post" action="{{ url_for('categories.add_category') }}">
+        <label for="name">Category Name:</label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">Add Category</button>
+    </form>
+    <a href="{{ url_for('categories.list_categories') }}">Back to Categories</a>
+</body>
+</html>
