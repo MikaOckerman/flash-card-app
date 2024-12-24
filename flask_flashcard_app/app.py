@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from extensions import db
 from flask_migrate import Migrate
 from blueprints.flashcards import flashcards_bp
@@ -21,6 +21,10 @@ app.register_blueprint(tags_bp, url_prefix='/tags')
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/')
+def home():
+    return render_template('base.html')
 
 @app.route('/test_db')
 def test_db():

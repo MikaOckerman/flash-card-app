@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for, redirect, flash
+from flask import Blueprint, render_template, request, redirect, url_for, redirect, flash, abort
+from sqlalchemy.orm import Session
 from extensions import db
 from models import Flashcard, Category, Tag
 
@@ -25,7 +26,9 @@ def add_flashcard():
 # Edit an existing flashcard
 @flashcards_bp.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_flashcard(id):
-    flashcard = Flashcard.query.get_or_404(id)
+    flashcard = db.session.get(Flashcard, id)
+    if not flashcard:
+        abort(404)
     if request.method == 'POST':
         flashcard.question = request.form['question']
         flashcard.answer = request.form['answer']
