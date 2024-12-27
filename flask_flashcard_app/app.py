@@ -23,8 +23,12 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 @app.route('/')
-def home():
-    return render_template('base.html')
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route('/study')
+def study_mode():
+    return render_template("study_mode.html")
 
 @app.route('/test_db')
 def test_db():

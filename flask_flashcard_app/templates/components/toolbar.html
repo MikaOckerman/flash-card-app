@@ -1,0 +1,47 @@
+<div class="bg-gray-700 text-black py-3 px-4 flex items-center space-x-4">
+    <a href="{{ url_for('dashboard') }}" 
+        class="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700 transition">
+        Home
+    </a>
+    <div class="flex justify-center p-4">
+        <div class="min-w-1/4">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="mb-4">
+                        {% for category, message in messages %}
+                            <li class="flash-message {{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    <a href="{{ url_for('flashcards.study_mode') }}" 
+        class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition">
+        Start Session
+    </a>
+    <a href="{{ url_for('flashcards.add_flashcard') }}" 
+       class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition">
+        Add Flashcard
+    </a>
+    <select class="border rounded p-1 bg-white text-black">
+        <option value="" disabled selected>Select a category</option>
+        {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+    </select>
+    <a href="{{ url_for('categories.add_category') }}" 
+        class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition">
+        <option value="add_new">Add New Category</option>
+    </a>
+    <select class="border rounded p-1 bg-white text-black">
+        <option value="" disabled selected>Select a tag</option>
+        {% for tag in tags %}
+        <option value="{{ tag.id }}">{{ tag.name }}</option>
+        {% endfor %}
+    </select>
+    <a href="{{ url_for('tags.add_tag') }}" 
+        class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition">
+        <option value="add_new">Add New Tag</option>
+    </a>
+</div>

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-background flex h-full">
+    <!-- Left Column -->
+    <div class="w-[73%] flex flex-col gap-4 p-4 bg-primary text-light">
+        <!-- Analytics Section -->
+        <div class="bg-secondary p-4 rounded-lg shadow">
+            <h3 class="text-lg font-semibold">Analytics</h3>
+            <p class="text-sm text-light">Placeholder for analytics graph...</p>
+        </div>
+
+        <!-- Timeline Section -->
+        <div class="bg-secondary p-4 rounded-lg shadow">
+            <h3 class="text-lg font-semibold">Timeline</h3>
+            <p class="text-sm text-light">Placeholder for timeline graph...</p>
+        </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="w-[27%] p-4 bg-accent text-background">
+        <!-- Recent Selections -->
+        <div class="bg-light p-4 rounded-lg shadow text-background">
+            <h3 class="text-lg font-semibold">Recent Selections</h3>
+            <ul class="mt-2 text-background list-disc list-inside">
+                <li><a href="{{ url_for('flashcards.study_mode') }}" class="text-primary hover:underline">Python</a></li>
+                <li><a href="{{ url_for('flashcards.study_mode') }}" class="text-primary hover:underline">Flask</a></li>
+                <li><a href="{{ url_for('flashcards.study_mode') }}" class="text-primary hover:underline">TypeScript</a></li>
+                <li><a href="{{ url_for('flashcards.study_mode') }}" class="text-primary hover:underline">NodeJS</a></li>
+                <li><a href="{{ url_for('flashcards.study_mode') }}" class="text-primary hover:underline">React</a></li>
+                <li><a href="{{ url_for('flashcards.study_mode') }}" class="text-primary hover:underline">Tailwind</a></li>
+                <li><a href="{{ url_for('flashcards.study_mode') }}" class="text-primary hover:underline">PostgreSQL</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

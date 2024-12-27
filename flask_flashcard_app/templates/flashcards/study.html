@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="p-6 flex flex-col items-center justify-center h-full">
+    {% if flashcards %}
+        <div class="bg-secondary p-6 rounded-lg shadow text-light text-center max-w-2xl">
+            <h3 class="text-xl font-semibold mb-4">Question:</h3>
+            <p class="text-lg">{{ flashcards[0].question }}</p>
+            <div class="mt-6 flex justify-around">
+                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Show Answer
+                </button>
+                <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                    Correct
+                </button>
+                <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                    Incorrect
+                </button>
+                <button class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                    Skip
+                </button>
+            </div>
+        </div>
+    {% else %}
+        <div class="bg-secondary p-6 rounded-lg shadow text-light text-center max-w-2xl">
+            <p>No flashcards available. Add some to start studying!</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

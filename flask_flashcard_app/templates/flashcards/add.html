@@ -1,15 +1,218 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Add Category</title>
-</head>
-<body>
-    <h1>Add a New Category</h1>
-    <form method="post" action="{{ url_for('categories.add_category') }}">
-        <label for="name">Category Name:</label>
-        <input type="text" id="name" name="name" required>
-        <button type="submit">Add Category</button>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center h-full">
+    <form class="bg-secondary p-6 rounded-lg shadow max-w-lg w-full text-light"
+        method="POST" action="{{ url_for('flashcards.add_flashcard') }}">
+    <h3 class="text-xl font-semibold mb-4">New Flashcard</h3>
+
+    <!-- Question Field -->
+    <div class="mb-4">
+        <label for="question" class="block text-sm font-semibold">Question</label>
+        <textarea id="question" name="question" required
+                    class="w-full p-2 rounded bg-light text-background"></textarea>
+    </div>
+
+    <!-- Answer Field -->
+    <div class="mb-4">
+        <label for="answer" class="block text-sm font-semibold">Answer</label>
+        <textarea id="answer" name="answer" required
+                    class="w-full p-2 rounded bg-light text-background"></textarea>
+    </div>
+
+    <!-- Category and Tag Selectors -->
+    <div class="mb-4 grid grid-cols-2 gap-4">
+        <!-- Category Dropdown -->
+        <div>
+            <label for="category" class="block text-sm font-semibold">Category</label>
+            <div id="category-section">
+                <select id="category" name="category" class="w-full p-2 rounded bg-light text-background">
+                    <option value="" disabled selected>Select a category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                    <option value="add_new">Add New Category</option>
+                </select>
+            </div>
+        </div>
+        <!-- Hidden Sub-Form -->
+        <div id="add-category-form" class="hidden mt-4">
+            <input type="text" id="new-category" name="new_category"
+                class="w-full p-2 rounded bg-light text-background" placeholder="New Category">
+            <div class="flex justify-between mt-2">
+                <button type="button" id="save-category" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                    Save
+                </button>
+                <button type="button" id="cancel-category" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                    Cancel
+                </button>
+            </div>
+        </div>
+        <!-- Tag Multi-Select Dropdown -->
+        <div>
+            <label for="tags" class="block text-sm font-semibold">Tags</label>
+            <div id="tag-section">
+                <select id="tags" name="tags" multiple class="w-full p-2 rounded bg-light text-background">
+                    {% for tag in tags %}
+                        <option value="{{ tag.id }}">{{ tag.name }}</option>
+                    {% endfor %}
+                    <option value="add_new">Add New Tag</option>
+                </select>
+                <p class="text-sm text-gray-400 mt-2">Hold Ctrl (Windows) or Cmd (Mac) to select multiple tags.</p>
+            </div>
+        </div>
+    </div>
+    <!-- Hidden Sub-Form -->
+    <div id="add-tag-form" class="hidden mt-4">
+        <input type="text" id="new-tag" name="new_tag"
+               class="w-full p-2 rounded bg-light text-background" placeholder="New Tag">
+        <div class="flex justify-between mt-2">
+            <button type="button" id="save-tag" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                Save
+            </button>
+            <button type="button" id="cancel-tag" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                Cancel
+            </button>
+        </div>
+    </div>
+    <!-- Submit and Cancel Buttons -->
+    <div class="flex justify-between">
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Add Flashcard
+        </button>
+        <button type="button" id="cancel-flashcard" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
+            Cancel
+        </button>
+    </div>
     </form>
-    <a href="{{ url_for('categories.list_categories') }}">Back to Categories</a>
-</body>
-</html>
+</div>
+
+<footer>
+    <script>
+    // Handle "Add New Category"
+    document.getElementById('category').addEventListener('change', function () {
+        const categorySection = document.getElementById('category-section');
+        const addCategoryForm = document.getElementById('add-category-form');
+
+        if (this.value === 'add_new') {
+            categorySection.classList.add('hidden'); // Hide dropdown
+            addCategoryForm.classList.remove('hidden'); // Show input form
+        }
+    });
+
+    // Handle Save for Category
+    document.getElementById('save-category').addEventListener('click', async function (event) {
+        event.preventDefault(); // Prevent triggering the parent form
+
+        const newCategory = document.getElementById('new-category').value;
+        if (!newCategory) {
+            alert('Category name is required!');
+            return;
+        }
+
+        // Submit new category via AJAX
+        const response = await fetch('/categories/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name: newCategory }),
+        });
+
+        if (response.ok) {
+            const categories = await response.json();
+
+            // Update the dropdown
+            const dropdown = document.getElementById('category');
+            dropdown.innerHTML = '<option value="" disabled selected>Select a category</option>';
+            categories.forEach(category => {
+                dropdown.innerHTML += `<option value="${category.id}">${category.name}</option>`;
+            });
+            dropdown.innerHTML += '<option value="add_new">Add New Category</option>';
+
+            // Reset sub-form and toggle visibility
+            document.getElementById('new-category').value = '';
+            document.getElementById('cancel-category').click();
+        } else {
+            const errorData = await response.json();
+            alert(errorData.error || 'Failed to add category.');
+        }
+    });
+
+    // Handle Cancel for Category
+    document.getElementById('cancel-category').addEventListener('click', function () {
+        const categorySection = document.getElementById('category-section');
+        const addCategoryForm = document.getElementById('add-category-form');
+
+        addCategoryForm.classList.add('hidden'); // Hide input form
+        categorySection.classList.remove('hidden'); // Show dropdown
+    });
+
+
+    // Handle "Add New Tag"
+    document.getElementById('tags').addEventListener('change', function () {
+        const tagSection = document.getElementById('tag-section');
+        const addTagForm = document.getElementById('add-tag-form');
+
+        if (Array.from(this.selectedOptions).some(option => option.value === 'add_new')) {
+            tagSection.classList.add('hidden'); // Hide dropdown
+            addTagForm.classList.remove('hidden'); // Show input form
+        }
+    });
+
+    // Handle Save for Tag
+    document.getElementById('save-tag').addEventListener('click', async function (event) {
+        event.preventDefault(); // Prevent triggering the parent form
+
+        const newTag = document.getElementById('new-tag').value;
+        if (!newTag) {
+            alert('Tag name is required!');
+            return;
+        }
+
+        // Submit new tag via AJAX
+        const response = await fetch('/tags/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name: newTag }),
+        });
+
+        if (response.ok) {
+            const tags = await response.json();
+
+            // Update the tag dropdown
+            const dropdown = document.getElementById('tags');
+            dropdown.innerHTML = '';
+            tags.forEach(tag => {
+                dropdown.innerHTML += `<option value="${tag.id}">${tag.name}</option>`;
+            });
+            dropdown.innerHTML += '<option value="add_new">Add New Tag</option>';
+
+            // Reset sub-form and toggle visibility
+            document.getElementById('new-tag').value = '';
+            document.getElementById('cancel-tag').click();
+        } else {
+            const errorData = await response.json();
+            alert(errorData.error || 'Failed to add tag.');
+        }
+    });
+
+    // Handle Cancel for Tag
+    document.getElementById('cancel-tag').addEventListener('click', function () {
+        const tagSection = document.getElementById('tag-section');
+        const addTagForm = document.getElementById('add-tag-form');
+
+        addTagForm.classList.add('hidden'); // Hide input form
+        tagSection.classList.remove('hidden'); // Show dropdown
+    });
+
+
+        // Cancel Adding Flashcard
+        document.getElementById('cancel-flashcard').addEventListener('click', function () {
+            window.location.href = "{{ url_for('dashboard') }}";
+        });
+    </script>
+</footer>
+{% endblock %}
