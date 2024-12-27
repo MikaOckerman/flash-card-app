@@ -1,2 +1,2 @@
 # flash-card-app
-Python based with React flashcard app for studying.
+Python based with Flask flashcard app for studying.
