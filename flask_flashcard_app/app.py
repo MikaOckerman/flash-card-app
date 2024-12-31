@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from sqlalchemy.orm import Session
 from extensions import db
 from flask_migrate import Migrate
 from blueprints.flashcards import flashcards_bp
@@ -37,3 +38,6 @@ def test_db():
         return "Database connection successful!"
     except Exception as e:
         return f"Database connection failed: {str(e)}"
+    
+
+

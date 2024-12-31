@@ -1,14 +1,37 @@
-<h1>Edit Flashcard</h1>
-<form method="POST">
-    <label>Question:</label>
-    <input type="text" name="question" value="{{ flashcard.question }}" required>
-    <label>Answer:</label>
-    <input type="text" name="answer" value="{{ flashcard.answer }}" required>
-    <label>Category:</label>
-    <select name="category">
-        {% for category in categories %}
-            <option value="{{ category.id }}" {% if category.id == flashcard.category_id %}selected{% endif %}>{{ category.name }}</option>
-        {% endfor %}
-    </select>
-    <button type="submit">Update Flashcard</button>
+<form method="POST" action="{{ url_for('flashcards.edit_flashcard', id=flashcard.id) }}">
+    <div class="mb-4">
+        <label for="question" class="block text-sm font-semibold">Question</label>
+        <textarea id="question" name="question" class="w-full p-2 rounded bg-light text-background">{{ flashcard.question }}</textarea>
+    </div>
+
+    <div class="mb-4">
+        <label for="answer" class="block text-sm font-semibold">Answer</label>
+        <textarea id="answer" name="answer" class="w-full p-2 rounded bg-light text-background">{{ flashcard.answer }}</textarea>
+    </div>
+
+    <div class="mb-4">
+        <label for="category" class="block text-sm font-semibold">Category</label>
+        <select id="category" name="category" class="w-full p-2 rounded bg-light text-background">
+            {% for category in categories %}
+                <option value="{{ category.id }}" {% if category.id == flashcard.category.id %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-4">
+        <label for="tags" class="block text-sm font-semibold">Tags</label>
+        <select id="tags" name="tags" multiple class="w-full p-2 rounded bg-light text-background">
+            {% for tag in tags %}
+                <option value="{{ tag.id }}" {% if tag in flashcard.tags %}selected{% endif %}>
+                    {{ tag.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        Save Changes
+    </button>
 </form>

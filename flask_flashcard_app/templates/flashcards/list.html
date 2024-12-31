@@ -1,15 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Categories</title>
-</head>
-<body>
-    <h1>Categories</h1>
-    <ul>
-        {% for category in categories %}
-            <li>{{ category.name }}</li>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-6 text-center">Flashcards List</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for flashcard in flashcards %}
+        <div class="bg-white shadow-lg rounded-lg p-4">
+            <h2 class="text-xl font-semibold mb-2">
+                {{ flashcard.question | safe }}
+            </h2>
+            <div class="text-gray-700">
+                {{ flashcard.answer | safe }}
+            </div>
+            <div class="mt-4">
+                <a href="{{ url_for('flashcards.edit_flashcard', id=flashcard.id) }}"
+                   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Edit
+                </a>
+                <form method="POST" action="{{ url_for('flashcards.delete_flashcard', id=flashcard.id) }}" class="inline">
+                    <button type="submit"
+                            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
-    <a href="{{ url_for('categories.add_category') }}">Add Category</a>
-</body>
-</html>
+    </div>
+</div>
+{% endblock %}

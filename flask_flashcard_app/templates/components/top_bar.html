@@ -1,11 +1,108 @@
-<div class="bg-gray-800 text-white text-xs py-2 px-4 flex justify-between items-center">
+<div class="bg-gray-800 text-xs py-2 px-4 flex justify-between items-center relative">
+    <!-- Menu Options -->
     <div class="flex space-x-4">
-        <button class="hover:underline">File</button>
-        <button class="hover:underline">Edit</button>
-        <button class="hover:underline">View</button>
-        <button class="hover:underline">Help</button>
+        <!-- File Menu -->
+        <div class="relative group py-2">
+            <button class="menu-button hover:underline text-white">File</button>
+            <div
+                class="absolute left-[-8px] mt-2 w-48 bg-white text-gray-800 rounded shadow-lg invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity duration-600 z-10">
+                <a href="{{ url_for('dashboard') }}" class="block px-4 py-2 hover:bg-gray-400 text-gray-800">Dashboard</a>
+                <a href="{{ url_for('flashcards.study_mode') }}" class="block px-4 py-2 hover:bg-gray-400 text-gray-800">Start Study Session</a>
+                <a href="{{ url_for('flashcards.list_flashcards') }}" class="block px-4 py-2 hover:bg-gray-400 text-gray-800">List All Flashcards</a>
+                <hr class="my-1">
+                <button onclick="saveAndExit()" class="block px-4 py-2 text-left hover:bg-gray-400 text-gray-800">Save & Exit</button>
+            </div>
+        </div>
+
+        <!-- Edit Menu -->
+        <div class="relative group py-2">
+            <button class="menu-button hover:underline text-white">Edit</button>
+            <div
+                class="absolute left-[-8px] mt-2 w-48 bg-white text-gray-800 rounded shadow-lg invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity duration-600 z-10">
+                <a href="{{ url_for('flashcards.list_flashcards') }}" class="block px-4 py-2 hover:bg-gray-400 text-gray-800">Select Flashcard to Edit</a>
+                {% if current_flashcard_id %}
+                    <a href="{{ url_for('flashcards.edit_flashcard', id=current_flashcard_id) }}" 
+                       class="block px-4 py-2 hover:bg-gray-400 text-gray-800">
+                        Edit Current Flashcard
+                    </a>
+                {% else %}
+                    <span class="block px-4 py-2 text-gray-400 cursor-not-allowed">
+                        Edit Current Flashcard
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- View Menu -->
+        <div class="relative group py-2">
+            <button class="menu-button hover:underline text-white">View</button>
+            <div
+                class="absolute left-[-8px] mt-2 w-48 bg-white text-gray-800 rounded shadow-lg invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity duration-600 z-10">
+                <a href="{{ url_for('dashboard') }}" class="block px-4 py-2 hover:bg-gray-400 text-gray-800">Dashboard</a>
+                <a href="{{ url_for('flashcards.study_mode') }}" class="block px-4 py-2 hover:bg-gray-400 text-gray-800">Study View</a>
+                <a href="{{ url_for('flashcards.add_flashcard') }}" class="block px-4 py-2 hover:bg-gray-400 text-gray-800">Add Flashcard</a>
+            </div>
+        </div>
+
+        <!-- Help Menu -->
+        <div class="relative group py-2">
+            <button class="menu-button hover:underline text-white">Help</button>
+            <div
+                class="absolute left-[-8px] mt-2 w-48 bg-white text-gray-800 rounded shadow-lg invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity duration-600 z-10">
+                <a href="#" class="block px-4 py-2 hover:bg-gray-400 text-gray-800">About FlashiCards</a>
+                <a href="#" class="block px-4 py-2 hover:bg-gray-400 text-gray-800">Documentation</a>
+                <a href="#" class="block px-4 py-2 hover:bg-gray-400 text-gray-800">Contact Support</a>
+            </div>
+        </div>
     </div>
-    <div class="text-center font-semibold">
+
+    <!-- App Title -->
+    <div class="text-center font-semibold text-white">
         FlashiCards v1.0
     </div>
 </div>
+
+<script>
+    function saveAndExit() {
+        if (confirm('Do you want to save and exit the application?')) {
+            // Optionally, perform any save operations here
+            window.close();
+        }
+    }
+
+    document.querySelectorAll('.group').forEach(group => {
+        const button = group.querySelector('button');
+        const menu = group.querySelector('.hidden');
+
+        let timeoutId;
+
+        button.addEventListener('mouseenter', () => {
+            clearTimeout(timeoutId);
+            menu.classList.remove('hidden');
+            menu.classList.add('block');
+            menu.style.opacity = '1';
+        });
+
+        group.addEventListener('mouseleave', () => {
+            timeoutId = setTimeout(() => {
+                menu.classList.remove('block');
+                menu.classList.add('hidden');
+                menu.style.opacity = '0';
+            }, 300); // adjust this delay as needed
+        });
+
+        // Keep menu open if mouse enters the menu itself
+        menu.addEventListener('mouseenter', () => {
+            clearTimeout(timeoutId);
+        });
+
+        menu.addEventListener('mouseleave', () => {
+            timeoutId = setTimeout(() => {
+                menu.classList.remove('block');
+                menu.classList.add('hidden');
+                menu.style.opacity = '0';
+            }, 300); // same delay as above
+        });
+    });
+
+</script>
